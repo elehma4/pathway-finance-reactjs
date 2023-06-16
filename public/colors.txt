@@ -1,0 +1,3 @@
+Dark greys: #212121 or #2B2B2B
+Accent Sky Blue: #007BFF
+White: #FFFFFF
