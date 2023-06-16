@@ -27,18 +27,18 @@ const NavBar = () => {
     <div className={shadow ? 'fixed w-full h-20 bg-[#212121] shadow-xl z-[100]' : 'fixed w-full h-20 bg-[#212121] z-[100]'}>
         <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <Link>
-                <img src="/assets/path-logo-white.png" alt="/" width='129' height='37' />
+                <img src="/assets/path-logo-white1.png" alt="/" width='147' height='37' />
             </Link>
             <div>
                 <ul className='text-white hidden md:flex'>
                     <Link href='/' scroll={false}>
-                        <li className='ml-14 text-md uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Home</li>
+                        <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Home</li>
                     </Link>
                     <Link href='/#Markets' scroll={false}>
-                        <li className='ml-14 text-md uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Markets</li>
+                        <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Markets</li>
                     </Link>
                     <Link href='/#Insights' scroll={false}>
-                        <li className='ml-14 text-md uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Insights</li>
+                        <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Insights</li>
                     </Link>
                 </ul>
                 <div onClick={handleNav} className='md:hidden cursor-pointer'>
