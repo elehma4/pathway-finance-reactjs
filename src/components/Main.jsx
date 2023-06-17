@@ -16,7 +16,7 @@ const Main = () => {
             animate-text'>
             Your Financial Compass
             </h2>
-            <button className=' mt-12 py-5 px-7 rounded-full text-xl bg-gradient-to-r from-[#007BFF] to-white animate-text font-semibold'>Enter Trading Portal</button>        
+            <button className=' mt-12 py-5 px-7 rounded-full text-xl bg-gradient-to-r from-[#007BFF] to-white animate-text font-semibold hover:scale-105 ease-in duration-300'>Enter Trading Portal</button>        
 
             </div>
         </div>
