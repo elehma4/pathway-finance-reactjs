@@ -1,6 +1,9 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { Link } from 'react-router-dom'
 import { ColorType, createChart } from 'lightweight-charts'
+import { Indices } from './moneyMarkets/Indices';
+import { Stocks } from './moneyMarkets/Stocks';
+import { Crypto } from './moneyMarkets/Crypto';
 
 const Markets = (props) => {
 
@@ -15,6 +18,15 @@ const Markets = (props) => {
         { time: '2018-12-29', value: 23.92 },
         { time: '2018-12-30', value: 22.68 },
         { time: '2018-12-31', value: 22.67 },
+        { time: '2019-01-01', value: 23.67 },
+        { time: '2019-01-02', value: 24.79 },
+        { time: '2019-01-03', value: 23.24 },
+        { time: '2019-01-04', value: 25.87 },
+        { time: '2019-01-05', value: 26.27 },
+        { time: '2019-01-06', value: 26.05 },
+        { time: '2019-01-07', value: 28.53 },
+        { time: '2019-01-08', value: 30.17 },
+        { time: '2019-01-09', value: 34.37 },
     ];
 
     const {
@@ -29,6 +41,9 @@ const Markets = (props) => {
     } = props;
 
     const chartContainerRef = useRef();
+
+    const [activeMarket, setActiveMarket] = useState('indices');
+
 
     useEffect(
         () => {
@@ -61,21 +76,25 @@ const Markets = (props) => {
     );
 
   return (
-    <div className='w-full md:h-screen p-2 bg-white flex'>
-    <div className='max-w-[1240px] m-auto md:grid grid-cols-3 gap-4'>
-        <h2 className='text-[#212121] col-span-3 pl-5'>Trade Live Markets</h2>
-        <div className='w-full h-auto m-auto rounded-full flex items-center justify-center p-4 hover:scale-105 ease-in duration-300 col-span-1 font-normal'>
-            <button className='bg-transparent text-lg hover:bg-gray-100 p-3 rounded-lg'>Indices</button>
-            <button className='bg-transparent text-lg hover:bg-gray-100 p-3 rounded-lg'>Stocks</button>
-            <button className='bg-transparent text-lg hover:bg-gray-100 p-3 rounded-lg'>Crypto</button>
+    <div className='w-full md:h-screen p-2 bg-white flex flex-col items-center justify-center sm:py-20'>
+
+    <div className='max-w-[1240px] mt-auto md:grid grid-cols-5 gap-2'>
+        <div className='col-span-5'>
+            <h2 className='text-[#212121] pl-3 sm:pl-5'>Trade Live Markets</h2>
         </div>
-        <div className='w-full h-auto m-auto rounded-full flex items-center justify-between p-4 col-span-3'>
-        <button className='bg-transparent text-lg hover:bg-gray-100 p-4 rounded-lg col-span-1 hover:scale-110 ease-in duration-300 w-full flex items-center justify-start mx-2 shadow-md font-semibold'><img src="/assets/s-and-p-500.png" className='w-10 rounded-full mr-2' />S&P 500 Index</button>
-        <button className='bg-transparent text-lg hover:bg-gray-100 p-4 rounded-lg col-span-1 hover:scale-110 ease-in duration-300 w-full flex items-center justify-start mx-2 shadow-md font-semibold'><img src="/assets/nasdaq-100.png" className='w-10 rounded-full mr-2' />Nasdaq 100</button>
-        <button className='bg-transparent text-lg hover:bg-gray-100 p-4 rounded-lg col-span-1 hover:scale-110 ease-in duration-300 w-full flex items-center justify-start mx-2 shadow-md font-semibold'><img src="/assets/u-s-dollar-index.png" className='w-10 rounded-full mr-2' />U.S. Dollar</button>
+        <div className='w-full h-auto m-auto rounded-full flex items-center justify-start pl-6 p-4 hover:scale-105 ease-in duration-300 font-normal'>
+            <button className={`bg-transparent text-lg p-3 rounded-lg ${activeMarket === 'indices' ? 'shadow ease-in' : ''} hover:bg-gray-100`} onClick={() => setActiveMarket('indices')}>Indices</button>
+            <button className={`bg-transparent text-lg p-3 rounded-lg ${activeMarket === 'stocks' ? 'shadow ease-in' : ''} hover:bg-gray-100`} onClick={() => setActiveMarket('stocks')}>Stocks</button>
+            <button className={`bg-transparent text-lg p-3 rounded-lg ${activeMarket === 'crypto' ? 'shadow ease-in' : ''} hover:bg-gray-100`} onClick={() => setActiveMarket('crypto')}>Crypto</button>
         </div>
-        <div className='col-span-3' ref={chartContainerRef}/>
+        <div/><div/><div/><div/>
+        {activeMarket === 'indices' && <Indices />}
+        {activeMarket === 'stocks' && <Stocks />}
+        {activeMarket === 'crypto' && <Crypto />}
+
     </div>
+    <div className='w-10/12 h-auto m-auto sm:mx-36' ref={chartContainerRef}/>
+
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {AiOutlineMenu, AiOutlineClose} from 'react-icons/ai'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 const NavBar = () => {
 
@@ -31,17 +31,17 @@ const NavBar = () => {
             </Link>
             <div>
                 <ul className='text-white hidden md:flex'>
-                    <Link href='/' scroll={false}>
+                    <Link to='/' scroll={false}>
                         <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Home</li>
                     </Link>
-                    <Link href='/#Markets' scroll={false}>
+                    <Link to='/#Markets' scroll={false}>
                         <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Markets</li>
                     </Link>
-                    <Link href='/#Insights' scroll={false}>
+                    <Link to='/#Insights' scroll={false}>
                         <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Insights</li>
                     </Link>
                 </ul>
-                <div onClick={handleNav} className='md:hidden cursor-pointer'>
+                <div onClick={handleNav} className='md:hidden cursor-pointer text-white'>
                     <AiOutlineMenu size={25}/>
                 </div>
             </div>
