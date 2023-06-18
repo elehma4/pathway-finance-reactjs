@@ -22,7 +22,7 @@ const Charts = ({ symbol, type, onSelectSymbol }) => {
 
         switch(type){
             case 'indices':
-                API_CALL = `https://api.twelvedata.com/time_series?apikey=${API_KEY_INDICES}&interval=1day&symbol=${symbol}&format=JSON&type=index&outputsize=100`;
+                API_CALL = `https://api.twelvedata.com/time_series?apikey=${API_KEY_INDICES}&interval=1day&symbol=${symbol}&format=JSON&type=index&outputsize=300`;
                 break;
             case 'stocks': 
                 API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${API_KEY}`;
