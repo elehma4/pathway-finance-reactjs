@@ -11,7 +11,9 @@ const Markets = (props) => {
 
   const handleActiveMarketChange = (market) => {
     setActiveMarket(market);
-    if(market === 'stocks'){
+    if(market === 'indices'){
+        setSelectedSymbol('GSPC')
+    } else if(market === 'stocks'){
         setSelectedSymbol('AAPL')
     } else if(market === 'crypto'){
         setSelectedSymbol('BTC')
