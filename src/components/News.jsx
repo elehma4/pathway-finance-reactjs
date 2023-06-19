@@ -27,8 +27,8 @@ function News() {
         <div id='insights' className='w-full lg:h-screen p-2 bg-white'>
           <div className='max-w-[1240px] mx-auto flex flex-col justify-center h-full'>
             <p className='text-xl tracking-widest uppercase text-[#2962FF]'>Technology</p>
-            <h2 className='py-4'>Market News & Insights</h2>
-            <p className='text-xl text-[#2962FF] pb-2'>Overall Sentiment: </p>
+            <h2 className='py-4'>Market News</h2>
+            {/* <p className='text-xl text-[#2962FF] pb-2'>Overall Sentiment: </p> */}
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
               {newsFeed.slice(0, 12).map((news) => (
                 <div className='p-6 shadow-xl rounded-xl hover:scale-105 ease-in duration-300' key={news.id}>
