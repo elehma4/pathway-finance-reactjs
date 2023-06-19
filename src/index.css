@@ -10,7 +10,7 @@ html {
 
 @layer base{
   body {
-    @apply bg-[#212121] font-sans;
+    @apply bg-[#212121] font-sans
   }
 
   h1, h2, h3, h4, h5, h6 {

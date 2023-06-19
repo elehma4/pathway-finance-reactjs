@@ -21,7 +21,7 @@ const Markets = (props) => {
   }
 
   return (
-    <div className='w-full md:h-screen p-2 bg-white flex flex-col items-center justify-center sm:py-20'>
+    <div id='Markets' className='w-full md:h-screen p-2 bg-white flex flex-col items-center justify-center sm:py-20'>
 
     <div className='max-w-[1240px] mt-auto md:grid grid-cols-5 gap-2'>
         <div className='col-span-5'>
