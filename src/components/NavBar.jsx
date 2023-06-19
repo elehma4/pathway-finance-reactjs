@@ -38,7 +38,7 @@ const NavBar = () => {
                         <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Markets</li>
                     </Link>
                     <Link to='/#Insights' scroll={false}>
-                        <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>Insights</li>
+                        <li className='ml-14 text-lg uppercase hover:border-b border-[#007BFF] hover:text-[#007BFF]'>News</li>
                     </Link>
                 </ul>
                 <div onClick={handleNav} className='md:hidden cursor-pointer text-white'>
