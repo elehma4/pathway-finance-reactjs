@@ -58,7 +58,7 @@ const Charts = ({ symbol, type, onSelectSymbol }) => {
                     const timeSeries = data['Time Series (Digital Currency Daily)'] || {};
                     let tradingDays = 0;
                     for(let key in timeSeries){
-                        if(tradingDays >= 252){
+                        if(tradingDays >= 365){
                             break;
                         }
                         stockChartXValuesFunction.push(key);
