@@ -39,7 +39,7 @@ const Markets = (props) => {
 
     </div>
     <Charts symbol={selectedSymbol} type={activeMarket} onSelectSymbol={setSelectedSymbol} />
-    <h3 className=''>Chart: ${selectedSymbol}</h3>
+    <h3 className='text-[#2962FF]'>Chart: ${selectedSymbol}</h3>
     </div>
   )
 }
