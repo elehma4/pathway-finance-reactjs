@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom';
 
 const Main = () => {
   return (
@@ -16,8 +16,9 @@ const Main = () => {
             animate-text'>
             Your Financial Compass
             </h2>
+            <Link to='/TradingPortal'>
             <button className=' mt-12 py-5 px-7 rounded-full text-xl bg-gradient-to-r from-[#007BFF] to-white animate-text font-semibold hover:scale-105 ease-in duration-300'>Enter Trading Portal</button>        
-
+            </Link>
             </div>
         </div>
 
