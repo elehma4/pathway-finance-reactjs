@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
-import { priceData } from './priceData/priceData';
+// import { priceData } from './priceData/priceData';
 import { Link } from 'react-router-dom';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import { TbStarsFilled } from 'react-icons/tb'
@@ -9,6 +9,8 @@ function TradingPortal() {
     const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [priceData, setPriceData] = useState(null)
+    const [stockName, setStockName] = useState("AAPL");
 
     const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -30,6 +32,9 @@ function TradingPortal() {
 
         console.log('searching tickers');
 
+        // Reset price data
+        setPriceData(null);
+
         const response = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchQuery}&apikey=${API_KEY}`);
         const data = await response.json();
 
@@ -37,12 +42,53 @@ function TradingPortal() {
         setSearchResults(data.bestMatches)
     }
 
-    // reference to the div containing the chart:
-    const chartContainerRef = useRef(); 
+    // fetch stock history
+    async function fetchStock(symbol) {
+        const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`);
+        const data = await response.json();
+        const timeSeries = data['Time Series (Daily)'] || {};
+        let tradingDays = 0;
+        let stockData = [];
+        for(let key in timeSeries){
+            if(tradingDays >= 504){ // ~2 trading yrs
+                break;
+            }
+            stockData.push({
+                time: key,
+                open: parseFloat(timeSeries[key]['1. open']),
+                high: parseFloat(timeSeries[key]['2. high']),
+                low: parseFloat(timeSeries[key]['3. low']),
+                close: parseFloat(timeSeries[key]['4. close']),
+
+            });
+            tradingDays++;
+        }
+        // Update priceData state with stock data
+        return stockData.reverse();
+    }
 
     useEffect(() => {
+        // Fetch AAPL data on component mount
+        fetchStock('AAPL').then(data => setPriceData(data));
+    }, []); // Empty array ensures this runs only once on mount
+
+    // reference to the div containing the chart:
+    const chartContainerRef = useRef(); 
+    const chartRef = useRef(null);
+
+    useEffect(() => {
+        if (priceData === null) { 
+            return; // If there is no data, do not create the chart
+        }
+
         console.log(`rendering chart`);
-        // chart instance:
+
+        if(chartRef.current){
+            chartRef.current.remove();
+            chartRef.current = null;
+        }
+
+        // Create a new chart:
         const chart = createChart(chartContainerRef.current, {
             layout: {
                 background: { color: '#222' },
@@ -52,7 +98,18 @@ function TradingPortal() {
                 vertLines: { color: '#444' },
                 horzLines: { color: '#444' }
             },
+            watermark: {
+                visible: true,
+                fontSize: 24,
+                horzAlign: 'center',
+                vertAlign: 'bottom',
+                color: 'rgb(0, 123, 255, 0.8)',
+                text: '$' + stockName,
+            },
         })
+
+        // Save reference to new chart
+        chartRef.current = chart;
 
         // convert candlestick data for use w/ a line series:
         const lineData = priceData.map(datapoint => ({
@@ -96,7 +153,7 @@ function TradingPortal() {
                 resizeObserver.unobserve(chartContainerRef.current);
             }
         };
-    }, []);
+    }, [priceData]);
 
   return (
     <>
@@ -120,7 +177,21 @@ function TradingPortal() {
                     {searchResults.length > 0 && (
                         <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg'>
                             {searchResults.map((result, index) => (
-                                <div key={index} className='bg-white rounded-md dropdown-item border p-1 w-full cursor-pointer hover:scale-105 ease-in duration-200'>
+                                <div 
+                                key={index} 
+                                id={result["1. symbol"]} 
+                                className='bg-white rounded-md dropdown-item border p-1 w-full cursor-pointer hover:scale-105 ease-in duration-200'
+                                onClick={async () => {
+                                    try{
+                                        const data = await fetchStock(result["1. symbol"]);
+                                        setPriceData(data);
+                                        setStockName(result["2. name"] || result["1. symbol"])
+                                        setSearchResults([]);
+                                    } catch (err){
+                                        console.error(err);
+                                    }
+                                }}
+                                >
                                     {result["1. symbol"]} - {result["2. name"]}
                                 </div>
                             ))}
