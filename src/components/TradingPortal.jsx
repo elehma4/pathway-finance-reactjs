@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
 import { priceData } from './priceData/priceData';
-import { Link } from 'react-scroll';
+import { Link } from 'react-router-dom';
 
 function TradingPortal() {
     // reference to the div containing the chart:
