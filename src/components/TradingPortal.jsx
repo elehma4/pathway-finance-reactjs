@@ -104,7 +104,7 @@ function TradingPortal() {
                 horzAlign: 'center',
                 vertAlign: 'bottom',
                 color: 'rgb(0, 123, 255, 0.8)',
-                text: '$' + stockName,
+                text: stockName,
             },
         })
 
@@ -185,7 +185,7 @@ function TradingPortal() {
                                     try{
                                         const data = await fetchStock(result["1. symbol"]);
                                         setPriceData(data);
-                                        setStockName(result["2. name"] || result["1. symbol"])
+                                        setStockName(result["2. name"] || '$' + result["1. symbol"])
                                         setSearchResults([]);
                                     } catch (err){
                                         console.error(err);
