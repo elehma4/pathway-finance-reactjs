@@ -91,7 +91,7 @@ function TradingPortal() {
         // Create a new chart:
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { color: '#212121' },
+                background: { color: '#000033' },
                 textColor: '#DDD'
             },
             grid: {
@@ -157,7 +157,7 @@ function TradingPortal() {
 
   return (
     <>
-    <div className='fixed w-full h-20 bg-[#212121] z-[100]'>
+    <div className='fixed w-full h-20 bg-[#212121] z-[100] border-b'>
         <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <div className='flex items-center' >
             <Link to='/' smooth={true} duration={500} className='cursor-pointer mr-2 sm:mr-6'>
@@ -203,9 +203,9 @@ function TradingPortal() {
                 {windowWidth > 1020 ? (
                 <>
                 Favorites: 
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='BTC'>$AAPL <AiFillStar className='w-10 text-yellow-300'/></button>
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='ETH'>$AMZN <AiFillStar className='w-10 text-yellow-300'/></button>
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='TSLA'>$TSLA <AiFillStar className='w-10 text-yellow-300'/></button>
+                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='BTC'>$AAPL <AiFillStar className='w-10 text-yellow-400'/></button>
+                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='ETH'>$AMZN <AiFillStar className='w-10 text-yellow-400'/></button>
+                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='TSLA'>$TSLA <AiFillStar className='w-10 text-yellow-400'/></button>
                 </>
                 ) : (
                     <div><TbStarsFilled className='m-2 w-10' /></div>
@@ -213,7 +213,7 @@ function TradingPortal() {
             </div>
         </div>
     </div>
-    <div id='TradingPortal' className='w-full h-screen'>
+    <div id='TradingPortal' className='w-full h-screen bg-[#000033]'>
         <div className='p-4 w-full h-full mx-auto flex justify-center items-center text-white'>
             <div ref={chartContainerRef} className='w-full h-full' />
         </div>
