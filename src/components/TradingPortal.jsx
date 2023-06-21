@@ -91,7 +91,7 @@ function TradingPortal() {
         // Create a new chart:
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { color: '#222' },
+                background: { color: '#212121' },
                 textColor: '#DDD'
             },
             grid: {
