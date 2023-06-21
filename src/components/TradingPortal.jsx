@@ -13,6 +13,7 @@ function TradingPortal() {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [priceData, setPriceData] = useState(null)
     const [stockName, setStockName] = useState("AAPL");
+    const [showDropdown, setShowDropdown] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -161,9 +162,21 @@ function TradingPortal() {
         };
     }, [priceData]);
 
+    const handleClickFavorite = async (symbol) => {
+        try {
+            const symbolStripped = symbol.replace("$", "")
+            const data = await fetchStock(symbolStripped);
+            setPriceData(data);
+            setStockName('$' + symbolStripped);
+            setShowDropdown(false);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
   return (
     <>
-    <div className='fixed w-full h-20 bg-[#212121] z-[100] border-b'>
+    <div className='fixed w-full h-20 bg-[#212121] z-[100] border-b border-[#DDD]'>
         <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <div className='flex items-center' >
             <Link to='/' smooth={true} duration={500} className='cursor-pointer mr-2 sm:mr-6'>
@@ -181,7 +194,7 @@ function TradingPortal() {
                         <input type="submit" value="Submit" className='border-2 text-white bg-transparent text-sm sm:text-base cursor-pointer hover:scale-105 ease-in duration-200 p-px sm:p-1 rounded-lg flex items-center justify-center mx-1 my-px shadow-md font-semibold tracking-wider' />
                     </form>
                     {searchResults.length > 0 && (
-                        <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg'>
+                        <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg sm:text-base text-sm'>
                             {searchResults.map((result, index) => {
                                 const isFavorite = favorites.some(fav => fav.symbol === `$${result["1. symbol"]}`);
 
@@ -268,7 +281,38 @@ function TradingPortal() {
                 ))}
                 </>
                 ) : (
-                    <div><TbStarsFilled className='m-2 w-10' /></div>
+                    <div className='relative'>
+                        <TbStarsFilled 
+                        className='m-2 w-10 cursor-pointer' 
+                        onClick={() => setShowDropdown(!showDropdown)}
+                        />
+                        {showDropdown && (
+                            <div className='absolute top-full right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 overflow-hidden z-10'>
+                                {favorites.map((fav, index) => (
+                                    <div 
+                                    id={fav.symbol} 
+                                    className='flex items-center justify-center border'
+                                    >
+                                    <button
+                                        key={index}
+                                        className='block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                                        onClick={() => handleClickFavorite(fav.symbol)}
+                                        >
+                                            {fav.symbol}
+                                        </button>
+                                        <AiFillStar 
+                                            className='w-10 text-yellow-400 hover:scale-125 ease-in duration-200 cursor-pointer' 
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // stops the event from bubbling up to the parent
+                                                console.log("Dispatching removeFavorite with symbol: ", `${fav.symbol}`);
+                                                dispatch(removeFavorite({symbol: fav.symbol}));
+                                            }} 
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
