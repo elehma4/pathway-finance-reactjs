@@ -15,8 +15,8 @@ function News() {
                 setNewsFeed(data.feed);
             })
             .catch((error) => {
-                error('An error occurred while fetching news data. You have likely exceed the allowed API calls per minute. Please wait for 1 minute.');
-            });
+              console.error('An error occurred:', error);
+          });
     }
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function News() {
             <h2 className='py-4'>Market News</h2>
             {/* <p className='text-xl text-[#2962FF] pb-2'>Overall Sentiment: </p> */}
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-              {newsFeed.slice(0, 12).map((news) => (
+              {newsFeed && newsFeed.slice(0, 12).map((news) => (
                 <div className='p-6 shadow-xl rounded-xl hover:scale-105 ease-in duration-300' key={news.id}>
                   <div className='grid grid-cols-3 justify-center items-center'>
                     <div className='m-auto'>

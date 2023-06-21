@@ -4,6 +4,8 @@ import { createChart } from 'lightweight-charts';
 import { Link } from 'react-router-dom';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import { TbStarsFilled } from 'react-icons/tb'
+import { addFavorite, removeFavorite } from './favoriteSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function TradingPortal() {
     const [searchResults, setSearchResults] = useState([]);
@@ -11,6 +13,10 @@ function TradingPortal() {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [priceData, setPriceData] = useState(null)
     const [stockName, setStockName] = useState("AAPL");
+
+    const dispatch = useDispatch();
+
+    const favorites = useSelector((state) => state.favorites.favorites)
 
     const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -176,12 +182,19 @@ function TradingPortal() {
                     </form>
                     {searchResults.length > 0 && (
                         <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg'>
-                            {searchResults.map((result, index) => (
+                            {searchResults.map((result, index) => {
+                                const isFavorite = favorites.some(fav => fav.symbol === `$${result["1. symbol"]}`);
+
+                            return (
                                 <div 
                                 key={index} 
                                 id={result["1. symbol"]} 
-                                className='bg-white rounded-md dropdown-item border p-1 w-full cursor-pointer hover:scale-105 ease-in duration-200'
-                                onClick={async () => {
+                                className='bg-white rounded-md dropdown-item border p-1 w-full cursor-pointer hover:scale-105 ease-in duration-200 flex items-center'
+                                onClick={async (e) => {
+                                    // check if event is star:
+                                    if(e.target.closest('svg')){
+                                        return;
+                                    }
                                     try{
                                         const data = await fetchStock(result["1. symbol"]);
                                         setPriceData(data);
@@ -193,8 +206,28 @@ function TradingPortal() {
                                 }}
                                 >
                                     {result["1. symbol"]} - {result["2. name"]}
+
+                                    {/* Render the correct star based on whether it's a favorite */}
+                                    {isFavorite ? 
+                                        <AiFillStar 
+                                        className='w-10 text-yellow-400 hover:scale-125 ease-in duration-200 cursor-pointer'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            dispatch(removeFavorite({symbol: `$${result["1. symbol"]}`}));
+                                        }}
+                                        /> 
+                                    : 
+                                        <AiOutlineStar 
+                                        className='ml-2 hover:scale-125 ease-in duration-200'
+                                        onClick={(e) =>{
+                                            e.stopPropagation();
+                                            dispatch(addFavorite({symbol: `$${result["1. symbol"]}`}));
+                                        }}
+                                        />
+                                    }
                                 </div>
-                            ))}
+                            );
+                        })}
                         </div>
                     )}
                 </div>
@@ -203,9 +236,36 @@ function TradingPortal() {
                 {windowWidth > 1020 ? (
                 <>
                 Favorites: 
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='BTC'>$AAPL <AiFillStar className='w-10 text-yellow-400'/></button>
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='ETH'>$AMZN <AiFillStar className='w-10 text-yellow-400'/></button>
-                <button className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider' id='TSLA'>$TSLA <AiFillStar className='w-10 text-yellow-400'/></button>
+                {favorites.map((fav, index) => (
+                <div
+                    id={fav.symbol}
+                    className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider'
+                    key={index} // Best practice is to add a key when mapping
+                >
+                    <button
+                        onClick={async () => {
+                            try{
+                                const symbol = fav.symbol.replace("$", "")
+                                const data = await fetchStock(symbol);
+                                setPriceData(data);
+                                setStockName('$' + symbol);
+                            } catch (err){
+                                console.error(err);
+                            }
+                        }}
+                    >
+                        {fav.symbol}
+                    </button>
+                    <AiFillStar 
+                        className='w-10 text-yellow-400 hover:scale-125 ease-in duration-200 cursor-pointer' 
+                        onClick={(e) => {
+                            e.stopPropagation(); // stops the event from bubbling up to the parent
+                            console.log("Dispatching removeFavorite with symbol: ", `${fav.symbol}`);
+                            dispatch(removeFavorite({symbol: fav.symbol}));
+                        }} 
+                    />
+                </div>
+                ))}
                 </>
                 ) : (
                     <div><TbStarsFilled className='m-2 w-10' /></div>
