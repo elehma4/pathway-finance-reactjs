@@ -176,7 +176,7 @@ function TradingPortal() {
 
   return (
     <>
-    <div className='fixed w-full h-20 bg-[#212121] z-[100] border-b border-[#DDD]'>
+    <div className='fixed w-full h-20 bg-gradient-to-r from-[#212121] to-[#000033] z-[100] border-b border-[#DDD]'>
         <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <div className='flex items-center' >
             <Link to='/' smooth={true} duration={500} className='cursor-pointer mr-2 sm:mr-6'>
