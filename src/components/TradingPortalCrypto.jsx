@@ -8,10 +8,10 @@ import { addFavorite, removeFavorite } from './favoriteSlice';
 import { useDispatch, useSelector } from 'react-redux';
 const TradingPortalCrypto = () => {
     const [searchResults, setSearchResults] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchSymbol, setSearchSymbol] = useState("");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [priceData, setPriceData] = useState(null)
-    const [stockName, setStockName] = useState("AAPL");
+    const [cryptoName, setCryptoName] = useState("BTC");
     const [showDropdown, setShowDropdown] = useState(false);
 
     const dispatch = useDispatch();
@@ -41,18 +41,27 @@ const TradingPortalCrypto = () => {
         // Reset price data
         setPriceData(null);
 
-        const response = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchQuery}&apikey=${API_KEY}`);
+        const response = await fetch(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${searchSymbol}&market=USD&apikey=${API_KEY}`);
         const data = await response.json();
 
-        // update the state with best matches
-        setSearchResults(data.bestMatches)
+        if(data['Meta Data']){
+            const result = {
+                symbol: data['Meta Data']['2. Digital Currency Code'],
+                name: data['Meta Data']['3. Digital Currency Name']
+            };
+
+            setSearchResults([result]);
+        } else {
+            setSearchResults([]);
+            alert('No matching coin found. Not all crypto is supported at this time.')
+        }
     }
 
     // fetch stock history
-    async function fetchStock(symbol) {
-        const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`);
+    async function fetchCrypto(symbol) {
+        const response = await fetch(`https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${symbol}&market=USD&apikey=${API_KEY}`);
         const data = await response.json();
-        const timeSeries = data['Time Series (Daily)'] || {};
+        const timeSeries = data['Time Series (Digital Currency Daily)'] || {};
         let tradingDays = 0;
         let stockData = [];
         for(let key in timeSeries){
@@ -61,10 +70,10 @@ const TradingPortalCrypto = () => {
             }
             stockData.push({
                 time: key,
-                open: parseFloat(timeSeries[key]['1. open']),
-                high: parseFloat(timeSeries[key]['2. high']),
-                low: parseFloat(timeSeries[key]['3. low']),
-                close: parseFloat(timeSeries[key]['4. close']),
+                open: parseFloat(timeSeries[key]['1b. open (USD)']),
+                high: parseFloat(timeSeries[key]['2b. high (USD)']),
+                low: parseFloat(timeSeries[key]['3b. low (USD)']),
+                close: parseFloat(timeSeries[key]['4b. close (USD)']),
 
             });
             tradingDays++;
@@ -74,8 +83,8 @@ const TradingPortalCrypto = () => {
     }
 
     useEffect(() => {
-        // Fetch AAPL data on component mount
-        fetchStock('AAPL').then(data => setPriceData(data));
+        // Fetch BTC data on component mount
+        fetchCrypto('BTC').then(data => setPriceData(data));
     }, []); // Empty array ensures this runs only once on mount
 
     // reference to the div containing the chart:
@@ -110,7 +119,7 @@ const TradingPortalCrypto = () => {
                 horzAlign: 'center',
                 vertAlign: 'bottom',
                 color: 'rgb(0, 123, 255, 0.8)',
-                text: stockName,
+                text: cryptoName,
             },
         })
 
@@ -164,9 +173,9 @@ const TradingPortalCrypto = () => {
     const handleClickFavorite = async (symbol) => {
         try {
             const symbolStripped = symbol.replace("$", "")
-            const data = await fetchStock(symbolStripped);
+            const data = await fetchCrypto(symbolStripped);
             setPriceData(data);
-            setStockName('$' + symbolStripped);
+            setCryptoName('$' + symbolStripped);
             setShowDropdown(false);
         } catch (err) {
             console.error(err);
@@ -186,8 +195,8 @@ const TradingPortalCrypto = () => {
                     <form onSubmit={handleSubmit} className='flex items-center font-semibold'>
                         <input 
                             type="search" 
-                            value={searchQuery} 
-                            onChange={e => setSearchQuery(e.target.value)} 
+                            value={searchSymbol} 
+                            onChange={e => setSearchSymbol(e.target.value)} 
                             className='text-sm sm:text-base sm:px-2 h-6 sm:h-8 rounded-md' 
                         />
                         <input type="submit" value="Submit" className='border-2 text-white bg-transparent text-sm sm:text-base cursor-pointer hover:scale-105 ease-in duration-200 p-px sm:p-1 rounded-lg flex items-center justify-center mx-1 my-px shadow-md font-semibold tracking-wider' />
@@ -195,12 +204,12 @@ const TradingPortalCrypto = () => {
                     {searchResults.length > 0 && (
                         <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg sm:text-base text-sm'>
                             {searchResults.map((result, index) => {
-                                const isFavorite = favorites.some(fav => fav.symbol === `$${result["1. symbol"]}`);
+                                const isFavorite = favorites.some(fav => fav.symbol === `$${result.symbol}`);
 
                             return (
                                 <div 
                                 key={index} 
-                                id={result["1. symbol"]} 
+                                id={result.symbol} 
                                 className='bg-white rounded-md dropdown-item border p-1 w-full cursor-pointer hover:scale-105 ease-in duration-200 flex items-center'
                                 onClick={async (e) => {
                                     // check if event is star:
@@ -208,16 +217,16 @@ const TradingPortalCrypto = () => {
                                         return;
                                     }
                                     try{
-                                        const data = await fetchStock(result["1. symbol"]);
+                                        const data = await fetchCrypto(result.symbol);
                                         setPriceData(data);
-                                        setStockName(result["2. name"] || '$' + result["1. symbol"])
+                                        setCryptoName(result.name || '$' + result.symbol)
                                         setSearchResults([]);
                                     } catch (err){
                                         console.error(err);
                                     }
                                 }}
                                 >
-                                    {result["1. symbol"]} - {result["2. name"]}
+                                    {result.symbol} - {result.name}
 
                                     {/* Render the correct star based on whether it's a favorite */}
                                     {isFavorite ? 
@@ -225,7 +234,7 @@ const TradingPortalCrypto = () => {
                                         className='w-10 text-yellow-400 hover:scale-125 ease-in duration-200 cursor-pointer'
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            dispatch(removeFavorite({symbol: `$${result["1. symbol"]}`}));
+                                            dispatch(removeFavorite({symbol: `$${result.symbol}`}));
                                         }}
                                         /> 
                                     : 
@@ -233,7 +242,7 @@ const TradingPortalCrypto = () => {
                                         className='ml-2 hover:scale-125 ease-in duration-200'
                                         onClick={(e) =>{
                                             e.stopPropagation();
-                                            dispatch(addFavorite({symbol: `$${result["1. symbol"]}`}));
+                                            dispatch(addFavorite({symbol: `$${result.symbol}`}));
                                         }}
                                         />
                                     }
@@ -258,9 +267,9 @@ const TradingPortalCrypto = () => {
                         onClick={async () => {
                             try{
                                 const symbol = fav.symbol.replace("$", "")
-                                const data = await fetchStock(symbol);
+                                const data = await fetchCrypto(symbol);
                                 setPriceData(data);
-                                setStockName('$' + symbol);
+                                setCryptoName('$' + symbol);
                             } catch (err){
                                 console.error(err);
                             }
