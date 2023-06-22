@@ -24,7 +24,7 @@ function News() {
     }, []);
 
     return (
-        <div id='News' className='w-full lg:h-screen p-2 bg-white'>
+        <div id='News' className='w-full lg:h-screen p-2 bg-white max-sm:pt-14'>
           <div className='max-w-[1240px] mx-auto flex flex-col justify-center h-full'>
             <p className='text-xl tracking-widest uppercase text-[#2962FF]'>Technology</p>
             <h2 className='py-4'>Market News</h2>

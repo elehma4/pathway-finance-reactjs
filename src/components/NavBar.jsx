@@ -6,6 +6,7 @@ const NavBar = () => {
 
     const [nav, setNav] = useState(false)
     const [shadow, setShadow] = useState(false)
+    
 
     const handleNav = () => {
         setNav(!nav)
