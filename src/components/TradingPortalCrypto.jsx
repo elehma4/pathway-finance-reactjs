@@ -4,7 +4,7 @@ import { createChart } from 'lightweight-charts';
 import { Link } from 'react-router-dom';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import { TbStarsFilled } from 'react-icons/tb'
-import { addFavorite, removeFavorite } from './favoriteSlice';
+import { addCryptoFavorite, removeCryptoFavorite } from './favoriteSlice';
 import { useDispatch, useSelector } from 'react-redux';
 const TradingPortalCrypto = () => {
     const [searchResults, setSearchResults] = useState([]);
@@ -16,7 +16,7 @@ const TradingPortalCrypto = () => {
 
     const dispatch = useDispatch();
 
-    const favorites = useSelector((state) => state.favorites.favorites)
+    const favorites = useSelector((state) => state.favorites.cryptoFavorites)
 
     const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -65,7 +65,7 @@ const TradingPortalCrypto = () => {
         let tradingDays = 0;
         let stockData = [];
         for(let key in timeSeries){
-            if(tradingDays >= 504){ // ~2 trading yrs
+            if(tradingDays >= 1095){ // ~3 trading yrs
                 break;
             }
             stockData.push({
@@ -204,7 +204,13 @@ const TradingPortalCrypto = () => {
                     {searchResults.length > 0 && (
                         <div className='dropdown bg-transparent fixed text-black font-semibold rounded-lg sm:text-base text-sm'>
                             {searchResults.map((result, index) => {
-                                const isFavorite = favorites.some(fav => fav.symbol === `$${result.symbol}`);
+                                let isFavorite;
+                                if(!favorites){
+                                    isFavorite = false;
+                                } else {
+                                    isFavorite = favorites.some(fav => fav.symbol === `$${result.symbol}`);
+                                }
+                                
 
                             return (
                                 <div 
@@ -234,7 +240,7 @@ const TradingPortalCrypto = () => {
                                         className='w-10 text-yellow-400 hover:scale-125 ease-in duration-200 cursor-pointer'
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            dispatch(removeFavorite({symbol: `$${result.symbol}`}));
+                                            dispatch(removeCryptoFavorite({symbol: `$${result.symbol}`}));
                                         }}
                                         /> 
                                     : 
@@ -242,13 +248,15 @@ const TradingPortalCrypto = () => {
                                         className='ml-2 hover:scale-125 ease-in duration-200'
                                         onClick={(e) =>{
                                             e.stopPropagation();
-                                            dispatch(addFavorite({symbol: `$${result.symbol}`}));
+                                            dispatch(addCryptoFavorite({symbol: `$${result.symbol}`}));
                                         }}
                                         />
                                     }
                                 </div>
                             );
-                        })}
+                            
+                        })
+                        }
                         </div>
                     )}
                 </div>
@@ -257,7 +265,7 @@ const TradingPortalCrypto = () => {
                 {windowWidth > 1020 ? (
                 <>
                 Favorites: 
-                {favorites.map((fav, index) => (
+                {favorites && favorites.map((fav, index) => (
                 <div
                     id={fav.symbol}
                     className='border bg-transparent text-lg p-2 rounded-lg hover:scale-105 ease-in duration-300 w-full flex items-center justify-center mx-2 shadow-md font-semibold tracking-wider'
@@ -282,7 +290,7 @@ const TradingPortalCrypto = () => {
                         onClick={(e) => {
                             e.stopPropagation(); // stops the event from bubbling up to the parent
                             console.log("Dispatching removeFavorite with symbol: ", `${fav.symbol}`);
-                            dispatch(removeFavorite({symbol: fav.symbol}));
+                            dispatch(removeCryptoFavorite({symbol: fav.symbol}));
                         }} 
                     />
                 </div>
@@ -296,7 +304,7 @@ const TradingPortalCrypto = () => {
                         />
                         {showDropdown && (
                             <div className='absolute top-full right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 overflow-hidden z-10'>
-                                {favorites.map((fav, index) => (
+                                {favorites && favorites.map((fav, index) => (
                                     <div 
                                     id={fav.symbol} 
                                     className='flex items-center justify-center border'
@@ -313,7 +321,7 @@ const TradingPortalCrypto = () => {
                                             onClick={(e) => {
                                                 e.stopPropagation(); // stops the event from bubbling up to the parent
                                                 console.log("Dispatching removeFavorite with symbol: ", `${fav.symbol}`);
-                                                dispatch(removeFavorite({symbol: fav.symbol}));
+                                                dispatch(removeCryptoFavorite({symbol: fav.symbol}));
                                             }} 
                                         />
                                     </div>
