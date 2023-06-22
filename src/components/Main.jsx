@@ -45,6 +45,7 @@ const Main = () => {
                   Trade Stocks
                 </button>
                 </Link>
+                <Link to='/TradingPortalCrypto'>
                 <button 
                   className="block w-full mt-12 py-5 px-7 rounded-full text-xl bg-gradient-to-r from-[#007BFF] to-white animate-text font-semibold hover:scale-105 ease-in duration-300" 
                   onClick={() => {
@@ -53,6 +54,7 @@ const Main = () => {
                 >
                   Trade Crypto
                 </button>
+                </Link>
               </div>
             </div>
             )}

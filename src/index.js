@@ -11,7 +11,8 @@ import News from './components/News';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Element } from 'react-scroll';
 import TradingPortal from './components/TradingPortal';
-import favoriteReducer from './components/favoriteSlice'
+import TradingPortalCrypto from './components/TradingPortalCrypto';
+import favoriteReducer from './components/favoriteSlice';
 
 const persistedState = localStorage.getItem('reduxState')
                         ? JSON.parse(localStorage.getItem('reduxState'))
@@ -50,6 +51,7 @@ root.render(
           </>
         } />
         <Route path="/TradingPortal" element={<TradingPortal />} />
+        <Route path="/TradingPortalCrypto" element={<TradingPortalCrypto />} />
       </Routes>
     </Router>
   </Provider>,
