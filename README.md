@@ -5,8 +5,6 @@ Pathway Finance is a front-end stock and crypto analysis application where users
 <br/>
 
 ## <a id="tech">Technologies: 💻</a>
-
-- JavaScript
 - React
 - Redux (RTK)
 - Tailwind CSS
