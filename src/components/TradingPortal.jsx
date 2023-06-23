@@ -14,6 +14,7 @@ function TradingPortal() {
     const [priceData, setPriceData] = useState(null)
     const [stockName, setStockName] = useState("AAPL");
     const [showDropdown, setShowDropdown] = useState(false);
+    const [chartInterval, setChartInterval] = useState("DAILY_ADJUSTED"); // default is daily adjusted
 
     const dispatch = useDispatch();
 
@@ -50,23 +51,51 @@ function TradingPortal() {
     }
 
     // fetch stock history
-    async function fetchStock(symbol) {
-        const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`);
+    async function fetchStock(symbol, chartInterval) {
+        let url;
+        let timeSeriesKey;
+        switch(chartInterval){
+            case 'WEEKLY_ADJUSTED':
+                url = `https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+                timeSeriesKey = 'Weekly Adjusted Time Series'
+                break;
+            case 'DAILY_ADJUSTED':
+                url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+                timeSeriesKey = 'Time Series (Daily)'
+                break;
+            case 'HOURLY':
+                url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&outputsize=full&apikey=${API_KEY}`;
+                timeSeriesKey = 'Time Series (60min)'
+                break;
+            default:
+                throw new Error('Unknown interval')
+        }
+
+        const response = await fetch(url);
         const data = await response.json();
-        const timeSeries = data['Time Series (Daily)'] || {};
+        const timeSeries = data[timeSeriesKey] || {};
         let tradingDays = 0;
         let stockData = [];
+
         for(let key in timeSeries){
             if(tradingDays >= 504){ // ~2 trading yrs
                 break;
             }
+
+            let formattedTime;
+            if (chartInterval === 'HOURLY'){
+                let date = new Date(key);
+                formattedTime = date.getTime() / 1000; // unix timestamp in seconds
+            } else {
+                formattedTime = key; 
+            }
+
             stockData.push({
-                time: key,
+                time: formattedTime,
                 open: parseFloat(timeSeries[key]['1. open']),
                 high: parseFloat(timeSeries[key]['2. high']),
                 low: parseFloat(timeSeries[key]['3. low']),
                 close: parseFloat(timeSeries[key]['4. close']),
-
             });
             tradingDays++;
         }
@@ -76,8 +105,8 @@ function TradingPortal() {
 
     useEffect(() => {
         // Fetch AAPL data on component mount
-        fetchStock('AAPL').then(data => setPriceData(data));
-    }, []); // Empty array ensures this runs only once on mount
+        fetchStock('AAPL', chartInterval).then(data => setPriceData(data));
+    }, [chartInterval]); 
 
     // reference to the div containing the chart:
     const chartContainerRef = useRef(); 
@@ -165,7 +194,7 @@ function TradingPortal() {
     const handleClickFavorite = async (symbol) => {
         try {
             const symbolStripped = symbol.replace("$", "")
-            const data = await fetchStock(symbolStripped);
+            const data = await fetchStock(symbolStripped, chartInterval);
             setPriceData(data);
             setStockName('$' + symbolStripped);
             setShowDropdown(false);
@@ -209,7 +238,7 @@ function TradingPortal() {
                                         return;
                                     }
                                     try{
-                                        const data = await fetchStock(result["1. symbol"]);
+                                        const data = await fetchStock(result["1. symbol"], chartInterval);
                                         setPriceData(data);
                                         setStockName(result["2. name"] || '$' + result["1. symbol"])
                                         setSearchResults([]);
@@ -259,7 +288,7 @@ function TradingPortal() {
                         onClick={async () => {
                             try{
                                 const symbol = fav.symbol.replace("$", "")
-                                const data = await fetchStock(symbol);
+                                const data = await fetchStock(symbol, chartInterval);
                                 setPriceData(data);
                                 setStockName('$' + symbol);
                             } catch (err){
@@ -318,8 +347,19 @@ function TradingPortal() {
         </div>
     </div>
     <div id='TradingPortal' className='w-full h-screen bg-[#000033]'>
-        <div className='p-4 w-full h-full mx-auto flex justify-center items-center text-white'>
+        <div className='p-4 w-full h-full mx-auto flex justify-center items-center text-white flex-col'>
             <div ref={chartContainerRef} className='w-full h-full' />
+            <div className='w-full h-10 flex text-white font-semibold'>
+                <button className='block w-full px-4 py-2 text-sm rounded-sm hover:bg-gray-100 hover:text-[#000033]'
+                onClick={() => setChartInterval('WEEKLY_ADJUSTED')}
+                >Weekly</button>
+                <button className='block w-full px-4 py-2 text-sm rounded-sm hover:bg-gray-100 hover:text-[#000033]'
+                onClick={() => setChartInterval('DAILY_ADJUSTED')}
+                >Daily</button>
+                <button className='block w-full px-4 py-2 text-sm rounded-sm hover:bg-gray-100 hover:text-[#000033]'
+                onClick={() => setChartInterval('HOURLY')}
+                >Hourly</button>
+            </div>
         </div>
     </div>
     </>
