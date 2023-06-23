@@ -77,8 +77,10 @@ function TradingPortal() {
         let tradingDays = 0;
         let stockData = [];
 
-        for(let key in timeSeries){
-            if(tradingDays >= 504){ // ~2 trading yrs
+        for(let key in timeSeries){ // Entire Weekly is fetched
+            if(tradingDays >= 1764 && (chartInterval==='DAILY_ADJUSTED')){ // ~7 trading yrs for daily
+                break;
+            } else if (tradingDays >= 2160 && (chartInterval==='HOURLY')){ // ~3 months for hourly (if available)
                 break;
             }
 
