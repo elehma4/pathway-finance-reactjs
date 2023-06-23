@@ -65,7 +65,7 @@ const TradingPortalCrypto = () => {
         let tradingDays = 0;
         let stockData = [];
         for(let key in timeSeries){
-            if(tradingDays >= 1095){ // ~3 trading yrs
+            if(tradingDays >= 2555){ // ~7 trading yrs
                 break;
             }
             stockData.push({
