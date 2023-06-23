@@ -4,7 +4,8 @@ Pathway Finance (PATH) is a front-end stock and crypto analysis application wher
 ### 🔗 Live Link: (link)
 
 ## <a id="tech">Technologies: 💻</a>
-- <b>React
+- <b>Javascript
+- React
 - Redux (RTK)
 - Tailwind CSS
 - Lightweight Charts by TradingView
