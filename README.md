@@ -8,7 +8,7 @@ Pathway Finance (PATH) is a front-end stock and crypto analysis application wher
 - React
 - Redux (RTK)
 - Tailwind CSS
-- Lightweight Charts by TradingView
+- <a href="https://tradingview.github.io/lightweight-charts/">Lightweight Charts by TradingView</a>
 - APIs: <a class="apiLink" href="https://www.alphavantage.co/documentation/#">Alpha Vantage</a> & <a class="apiLink" href="https://twelvedata.com/docs">Twelve Data</a></b>
 
 
