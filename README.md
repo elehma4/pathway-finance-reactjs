@@ -1,7 +1,7 @@
 # Pathway Finance (React, Tailwind, & Redux)
 Pathway Finance (PATH) is a front-end stock and crypto analysis application where users can analyze financial market data through charts as well as stay up to date with news related to the financial markets. Users can also enter the <b>Stock Trading Portal</b> or the <b>Crypto Trading Portal</b> for full-screen, fully interactive candle-charts, as well as save favorite stocks or crypto to their local storage. 
 <br/>
-### 🔗 Live Link: (link)
+### 🔗 Live Link: https://pathway-finance.netlify.app/ 
 
 ## <a id="tech">Technologies: 💻</a>
 - <b>Javascript
